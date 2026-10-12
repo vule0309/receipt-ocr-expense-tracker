@@ -144,3 +144,4 @@ class _FramingPainter extends CustomPainter {
     return oldDelegate.frameRect != frameRect;
   }
 }
+

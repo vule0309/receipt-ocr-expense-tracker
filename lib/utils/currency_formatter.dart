@@ -7,11 +7,6 @@ class CurrencyFormatter {
     decimalDigits: 0,
   );
 
-  static final NumberFormat _compactVndFormat = NumberFormat.compactCurrency(
-    locale: 'vi_VN',
-    symbol: '₫',
-    decimalDigits: 1,
-  );
 
   /// Format as 150.000 ₫
   static String formatVND(double amount) {
@@ -86,3 +81,4 @@ class CurrencyFormatter {
     return double.tryParse(cleaned);
   }
 }
+

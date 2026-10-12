@@ -13,7 +13,6 @@ class AppTheme {
         seedColor: primaryColor,
         primary: primaryColor,
         secondary: secondaryColor,
-        background: backgroundColor,
         surface: surfaceColor,
       ),
       scaffoldBackgroundColor: backgroundColor,
@@ -28,7 +27,7 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surfaceColor,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -38,8 +37,8 @@ class AppTheme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: surfaceColor,
-        indicatorColor: primaryColor.withOpacity(0.12),
-        labelTextStyle: MaterialStateProperty.all(
+        indicatorColor: primaryColor.withValues(alpha: 0.12),
+        labelTextStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
         ),
       ),
@@ -66,3 +65,4 @@ class AppTheme {
     );
   }
 }
+

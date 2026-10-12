@@ -1,8 +1,7 @@
-import 'dart:io';
-import 'package:test/test.dart';
-import '../lib/services/receipt_heuristic_parser.dart';
-import '../lib/utils/currency_formatter.dart';
-import '../lib/models/category.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:ocr_expense_tracker/services/receipt_heuristic_parser.dart';
+import 'package:ocr_expense_tracker/utils/currency_formatter.dart';
+import 'package:ocr_expense_tracker/models/category.dart';
 
 void main() {
   group('CurrencyFormatter Tests', () {
@@ -132,3 +131,4 @@ TỔNG CỘNG: 45.000 VND
     });
   });
 }
+

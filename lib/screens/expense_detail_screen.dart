@@ -339,3 +339,4 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
     );
   }
 }
+

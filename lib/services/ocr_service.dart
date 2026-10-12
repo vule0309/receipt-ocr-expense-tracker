@@ -47,3 +47,4 @@ class OcrService {
     _textRecognizer = null;
   }
 }
+

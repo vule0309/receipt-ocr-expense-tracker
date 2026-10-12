@@ -449,3 +449,4 @@ class _ParserAmountResult {
 
   _ParserAmountResult(this.value, this.confidence, this.candidates);
 }
+

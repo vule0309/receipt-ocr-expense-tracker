@@ -60,15 +60,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // Find highest category
-    ExpenseCategory? topCat;
-    double maxCatSpend = 0.0;
-    for (final entry in _categoryData.entries) {
-      if (entry.value > maxCatSpend) {
-        maxCatSpend = entry.value;
-        topCat = entry.key;
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -295,3 +286,4 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     );
   }
 }
+

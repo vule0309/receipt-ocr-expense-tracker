@@ -42,3 +42,4 @@ class CategoryBadge extends StatelessWidget {
     );
   }
 }
+

@@ -57,3 +57,4 @@ class ParsedReceipt {
     this.extractedCandidates = const [],
   });
 }
+

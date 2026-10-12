@@ -207,7 +207,7 @@ class DatabaseHelper {
     // Start of week: Monday
     final startOfWeek = DateTime(anchor.year, anchor.month, anchor.day)
         .subtract(Duration(days: anchor.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6, hours: 23, minute: 59, second: 59));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
 
     final db = await database;
     final result = await db.rawQuery(
@@ -315,3 +315,4 @@ class DatabaseHelper {
     db.close();
   }
 }
+

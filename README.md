@@ -172,3 +172,4 @@ Project 3/
    - Quan sát hiệu ứng hoạt họa của biểu đồ Donut và biểu đồ Bar.
    - Chạm vào từng múi biểu đồ tròn để xem tỷ lệ % và số tiền tương ứng.
    - Chạm vào các cột trong tuần để xem Tooltip hiển thị số tiền chính xác.
+

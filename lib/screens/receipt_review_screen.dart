@@ -537,3 +537,4 @@ class _ReceiptReviewScreenState extends State<ReceiptReviewScreen> {
     );
   }
 }
+

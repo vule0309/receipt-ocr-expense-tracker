@@ -53,11 +53,8 @@ class _AnimatedBarChartState extends State<AnimatedBarChart>
   void _handleTap(Offset localPosition, Size size) {
     const leftPadding = 45.0;
     const rightPadding = 16.0;
-    const bottomPadding = 30.0;
-    const topPadding = 25.0;
 
     final chartWidth = size.width - leftPadding - rightPadding;
-    final chartHeight = size.height - topPadding - bottomPadding;
 
     if (localPosition.dx < leftPadding || localPosition.dx > size.width - rightPadding) {
       setState(() => _selectedDayIndex = null);
@@ -408,3 +405,4 @@ class _BarChartPainter extends CustomPainter {
         oldDelegate.weeklyData != weeklyData;
   }
 }
+

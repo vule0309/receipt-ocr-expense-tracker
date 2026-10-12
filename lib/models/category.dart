@@ -99,3 +99,4 @@ extension ExpenseCategoryExtension on ExpenseCategory {
     return ExpenseCategory.food;
   }
 }
+
