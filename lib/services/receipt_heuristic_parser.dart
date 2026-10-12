@@ -224,7 +224,9 @@ class ReceiptHeuristicParser {
           final matchedStr = m.group(0)!;
           final parsed = CurrencyFormatter.parseAmount(matchedStr);
           if (parsed != null && parsed > 500 && parsed < 1000000000) {
-            candidates.add('$matchedStr (from "$line")');
+            if (!candidates.contains(matchedStr)) {
+              candidates.add(matchedStr);
+            }
             totalFound = parsed;
             // Often the last match on a total line is the final amount
           }
@@ -235,7 +237,9 @@ class ReceiptHeuristicParser {
           final matchedStr = m.group(0)!;
           final parsed = CurrencyFormatter.parseAmount(matchedStr);
           if (parsed != null && parsed > 500 && parsed < 1000000000) {
-            candidates.add('$matchedStr (subtotal "$line")');
+            if (!candidates.contains(matchedStr)) {
+              candidates.add(matchedStr);
+            }
             subtotalFound = parsed;
           }
         }
@@ -265,7 +269,9 @@ class ReceiptHeuristicParser {
         final parsed = CurrencyFormatter.parseAmount(valStr);
         if (parsed != null && parsed > maxCurrencyAmount && parsed < 1000000000) {
           maxCurrencyAmount = parsed;
-          candidates.add('$valStr (with currency marker)');
+          if (!candidates.contains(valStr)) {
+            candidates.add(valStr);
+          }
         }
       }
     }
@@ -291,7 +297,9 @@ class ReceiptHeuristicParser {
         final parsed = CurrencyFormatter.parseAmount(str);
         if (parsed != null && parsed >= 1000 && parsed <= 50000000 && parsed > fallbackMax) {
           fallbackMax = parsed;
-          candidates.add('$str (fallback)');
+          if (!candidates.contains(str)) {
+            candidates.add(str);
+          }
         }
       }
     }
