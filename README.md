@@ -9,8 +9,8 @@
 ## 1. GENERAL INFORMATION & DELIVERABLE LINKS
 * **Student Information (Cá nhân thực hiện):**
   1. **Lê Hoàng Vũ** — Student ID: **23IT.B249** — Class: **23GITB** — Role: Fullstack Mobile Development (UI/UX, OCR Engine, CustomPainter, SQLite Database, CI/CD) — Contribution: 100%
-* **🔗 Release APK Download:** [`build/app/outputs/flutter-apk/app-release.apk`](build/app/outputs/flutter-apk/app-release.apk)
-* **💻 GitHub Repository:** `https://github.com/vule0309/receipt-ocr-expense-tracker`
+* **🔗 Release APK Download:** [`https://github.com/vule0309/receipt-ocr-expense-tracker/releases/download/v1.0.0/app-release.apk`](https://github.com/vule0309/receipt-ocr-expense-tracker/releases/download/v1.0.0/app-release.apk)
+* **💻 GitHub Repository:** [`https://github.com/vule0309/receipt-ocr-expense-tracker`](https://github.com/vule0309/receipt-ocr-expense-tracker)
 
 ---
 
