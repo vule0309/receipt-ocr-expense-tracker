@@ -1,16 +1,16 @@
 # MINI-PROJECT SHORT TECHNICAL REPORT
 **Course:** Cross-Platform Mobile App Development (VKU)  
 **Mini-Project Title:** Mini-Project 3: OCR Expense Tracker & Receipt Parser (Flutter & Dart)  
-**Student Name:** [Họ và tên sinh viên]  
-**Submission Date:** [DD/MM/YYYY]  
+**Student Name:** Lê Hoàng Vũ
+**Submission Date:** 17/10/2026
 
 ---
 
 ## 1. GENERAL INFORMATION & DELIVERABLE LINKS
 * **Student Information (Cá nhân thực hiện):**
-  1. **[Họ và tên sinh viên]** — Student ID: **[22ITxxx]** — Class: **[22ITx]** — Role: Fullstack Mobile Development (UI/UX, OCR Engine, CustomPainter, SQLite Database, CI/CD) — Contribution: 100%
+  1. **Lê Hoàng Vũ** — Student ID: **23IT.B249** — Class: **23GITB** — Role: Fullstack Mobile Development (UI/UX, OCR Engine, CustomPainter, SQLite Database, CI/CD) — Contribution: 100%
 * **🔗 Release APK Download:** [`build/app/outputs/flutter-apk/app-release.apk`](build/app/outputs/flutter-apk/app-release.apk)
-* **💻 GitHub Repository:** `https://github.com/[username]/[your-repo-name]`
+* **💻 GitHub Repository:** `https://github.com/vule0309/receipt-ocr-expense-tracker`
 
 ---
 
@@ -135,7 +135,7 @@ Dưới đây là các ảnh chụp thực tế từ ứng dụng đang chạy t
 
 1. **Clone repository về máy tính:**
    ```bash
-   git clone https://github.com/[username]/[your-repo-name].git
+   git clone https://github.com/vule0309/receipt-ocr-expense-tracker
    cd [your-repo-name]
    ```
 
