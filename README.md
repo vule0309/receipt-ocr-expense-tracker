@@ -1,175 +1,192 @@
-# Mini-Project 3: OCR Expense Tracker & Receipt Parser (Flutter & Dart)
-
-> **Môn học:** Lập Trình Đa Nền Tảng (Cross-Platform Programming)  
-> **Công nghệ:** Flutter 3.x • Dart 3 • Google ML Kit On-Device Text Recognition • SQLite (`sqflite`) • CustomPainter
-
----
-
-## 📱 Giới thiệu tổng quan (Project Overview)
-
-Sinh viên và thủ quỹ các câu lạc bộ thường xuyên phải xử lý số lượng lớn hóa đơn giấy (siêu thị, quán cafe, nhà sách, đi lại, linh kiện...). Việc nhập thủ công từng con số vào bảng tính Excel rất tốn thời gian và dễ xảy ra sai sót.
-
-**OCR Expense Tracker** là ứng dụng Flutter quản lý tài chính cá nhân tích hợp **Trí tuệ nhân tạo On-Device (Google ML Kit)** và **Bộ máy Heuristic Regex thông minh**, cho phép:
-- Quét hóa đơn trực tiếp bằng camera ngoại tuyến (offline, sub-100ms, 0đ chi phí cloud).
-- Tự động bóc tách: **Tên cửa hàng (Merchant)**, **Tổng tiền thanh toán (Total Amount)**, **Ngày giao dịch (Date)** và **Phân loại danh mục (Category)**.
-- Quản lý giao dịch nội bộ bằng SQLite với lưu trữ ảnh thumbnail hóa đơn.
-- Trực quan hóa dữ liệu chi tiêu qua **Biểu đồ tròn (Donut Chart)** và **Biểu đồ cột (Weekly Bar Chart)** được vẽ hoàn toàn bằng **`CustomPainter`** (không dùng bất kỳ thư viện biểu đồ bên thứ ba nào).
+# MINI-PROJECT SHORT TECHNICAL REPORT
+**Course:** Cross-Platform Mobile App Development (VKU)  
+**Mini-Project Title:** Mini-Project 3: OCR Expense Tracker & Receipt Parser (Flutter & Dart)  
+**Student Name:** [Họ và tên sinh viên]  
+**Submission Date:** [DD/MM/YYYY]  
 
 ---
 
-## 🎯 4 Đặc tả chức năng cốt lõi (Core Specifications)
-
-### 1. Camera Capture & Image Cropping
-- **Live Viewfinder**: Kính ngắm camera thời gian thực với độ phân giải cao (`ResolutionPreset.high`).
-- **Focus & Exposure Tap**: Chạm vào bất kỳ điểm nào trên màn hình để lấy nét (`setFocusPoint`) và đo sáng, kèm hiệu ứng khung ngắm lấy nét động.
-- **Flash Toggle**: Hỗ trợ 4 chế độ đèn flash (Tắt, Tự động, Luôn bật, Đèn pin - Torch).
-- **Framing Crop Overlay**: Lớp phủ căn chỉnh hóa đơn với hiệu ứng 4 góc bracket chuyên nghiệp phong cách Document Scanner, tự động crop vùng ảnh hóa đơn trước khi đưa vào nhận diện OCR.
-- **Gallery & Mock Samples**: Tích hợp chọn ảnh từ thư viện (`image_picker`) và menu nạp hóa đơn mẫu (WinMart, Highlands Coffee, Fahasa, Grab...) để kiểm thử tức thì cả trên thiết bị thật, máy ảo Android lẫn Desktop.
-
-### 2. On-Device Text Recognition & Regex Heuristics
-- **Google ML Kit Text Recognition**: Nhận diện ký tự quang học offline sub-100ms trên thiết bị với bảng chữ cái Latin (`google_mlkit_text_recognition`).
-- **Heuristic Regex Engine (`ReceiptHeuristicParser`)**:
-  - **Bóc tách tổng tiền**: Xử lý định dạng tiền tệ Việt Nam và quốc tế (`150.000 đ`, `150,000 VND`, `215.000`, `150k`). Phân biệt chính xác giữa **Tổng thanh toán** và **Tiền thối/tiền thừa/tiền khách đưa** qua bộ lọc Negative Keywords.
-  - **Bóc tách ngày tháng**: Định dạng `DD/MM/YYYY`, `DD-MM-YYYY`, `YYYY-MM-DD`, `Ngày: ...`.
-  - **Nhận diện Merchant**: Kết hợp danh từ điển chuỗi cửa hàng phổ biến tại Việt Nam (WinMart, Highlands Coffee, Fahasa, CellphoneS, Grab, CGV...) và phân tích tiêu đề hóa đơn (Header Scan).
-  - **Phân loại tự động (Auto-Categorization)**: Suy luận thông minh vào 5 danh mục: `Food`, `Study`, `Travel`, `Gear`, `Entertainment`.
-  - **Màn hình Review tương tác (`ReceiptReviewScreen`)**: Cho phép người dùng kiểm tra độ tin cậy AI (Confidence Score), chỉnh sửa số tiền, tên cửa hàng, ngày, ghi chú, xem các ứng viên số tiền OCR gợi ý, và bảng chẩn đoán mã OCR Raw.
-
-### 3. Local Database & Transaction Lifecycle
-- **Cơ sở dữ liệu SQLite (`sqflite`)**:
-  - Bảng `expenses` được đánh index tại cột `date` và `category` nhằm tối ưu tốc độ truy vấn biểu đồ và thống kê.
-  - Hỗ trợ đầy đủ các thao tác CRUD (Thêm, Xem, Sửa, Xóa có xác nhận & Undo).
-  - Tìm kiếm toàn văn theo tên cửa hàng hoặc ghi chú.
-  - Bộ lọc chip danh mục tương tác trên màn hình chính.
-- **Quản lý Thumbnail Cache (`ThumbnailService`)**:
-  - Nén và thu nhỏ ảnh hóa đơn (`image` package) lưu vào thư mục ứng dụng nội bộ (`path_provider`).
-  - Tự động xóa file cache trên bộ nhớ khi người dùng xóa giao dịch.
-
-### 4. Custom Canvas Visualizations with `CustomPainter`
-> ⚡ **Tuân thủ 100% yêu cầu đề bài:** Tuyệt đối **KHÔNG** sử dụng thư viện biểu đồ bên thứ 3 (như `fl_chart`, `syncfusion_flutter_charts`). Toàn bộ biểu đồ được vẽ trực tiếp lên Canvas bằng `CustomPainter` và `AnimationController`.
-
-- **Animated Donut / Pie Chart (`AnimatedDonutChart`)**:
-  - Hiệu ứng quét cung góc động (`sweep animation`) mượt mà với đường cong `Curves.easeOutCubic`.
-  - Bo tròn đầu cung (`StrokeCap.round`) và khe hở mỹ thuật giữa các lát cắt.
-  - **Tương tác chạm (Hit Testing)**: Tính toán góc lượng giác `atan2(dy, dx)` khi người dùng chạm vào biểu đồ để phóng to lát cắt được chọn (`exploded offset`), kích hoạt bóng đổ và hiển thị chi tiết tên, số tiền, tỷ lệ phần trăm ngay tâm biểu đồ.
-  - Chú thích danh mục (Legend) dạng viên thuốc có thể chạm để chọn.
-- **Animated Weekly Spending Bar Chart (`AnimatedBarChart`)**:
-  - Hiệu ứng cột mọc từ dưới lên (0 đến chiều cao thực tế) theo tiến trình hoạt họa.
-  - Đỉnh cột bo tròn tinh tế (`Radius.circular(6)`) với dải màu Gradient hiện đại.
-  - Lưới tọa độ ngang (Horizontal gridlines) và nhãn trục Y định dạng tiền tệ rút gọn (`0`, `50k`, `100k`, `200k`).
-  - Đường nét đứt thể hiện mức chi tiêu trung bình ngày (**Average Line**).
-  - **Interactive Tooltip**: Khi chạm vào bất kỳ cột nào, một bong bóng tooltip màu đen với mũi tên chỉ báo sẽ vẽ trực tiếp lên Canvas hiển thị chính xác số tiền `VND` và thứ trong tuần.
+## 1. GENERAL INFORMATION & DELIVERABLE LINKS
+* **Student Information (Cá nhân thực hiện):**
+  1. **[Họ và tên sinh viên]** — Student ID: **[22ITxxx]** — Class: **[22ITx]** — Role: Fullstack Mobile Development (UI/UX, OCR Engine, CustomPainter, SQLite Database, CI/CD) — Contribution: 100%
+* **🔗 Release APK Download:** [`build/app/outputs/flutter-apk/app-release.apk`](build/app/outputs/flutter-apk/app-release.apk)
+* **💻 GitHub Repository:** `https://github.com/[username]/[your-repo-name]`
 
 ---
 
-## 📂 Cấu trúc thư mục dự án (Project Architecture)
+## 2. FEATURE IMPLEMENTATION CHECKLIST
 
+| # | Required Feature | Status | Implementation Details & Acceptance Level |
+|:---:|---|:---:|---|
+| **1** | **Camera Capture & Image Cropping** | ✅ Complete | • Live camera viewfinder 60fps sử dụng CameraX (`camera: ^0.12.1`).<br>• Chuyển đổi Flash đa chế độ (Auto, Off, Torch).<br>• Chạm lấy nét đa điểm (`setFocusPoint`) kèm hiệu ứng vòng tròn tiêu cự màu cam sinh động.<br>• Lớp phủ căn chỉnh hóa đơn chuẩn 4 góc bracket bo tròn (`FramingCropOverlay`), hỗ trợ chọn ảnh từ thư viện hoặc nạp hóa đơn mẫu thử nghiệm tức thì. |
+| **2** | **On-Device Text Recognition & Regex Heuristics** | ✅ Complete | • Nhận diện văn bản hoàn toàn ngoại tuyến (offline, sub-100ms, 0đ chi phí cloud) qua Google ML Kit (`google_mlkit_text_recognition`).<br>• Bộ máy Heuristic Regex tiếng Việt & quốc tế trích xuất tự động: Tổng tiền (`215.000 đ`, `150,000 VND`, `150k`), Ngày giao dịch (`DD/MM/YYYY`), Tên thương hiệu (WinMart, Highlands, Fahasa, Grab, CellphoneS...).<br>• Bộ lọc từ khóa phủ định (Negative Keywords) loại trừ hoàn toàn việc nhầm lẫn giữa tổng tiền với tiền thối/tiền thừa/tiền khách đưa.<br>• Màn hình Review tương tác cho phép chỉnh sửa trước khi lưu, hiển thị điểm tin cậy AI và chip gợi ý các con số OCR ứng viên. |
+| **3** | **Local Database & Transaction Lifecycle** | ✅ Complete | • Lưu trữ bền vững với SQLite (`sqflite`), đánh index tại cột `date` và `category` nhằm tối ưu hóa truy vấn biểu đồ.<br>• Hỗ trợ đầy đủ vòng đời CRUD (Thêm, Đọc, Sửa, Vuốt để xóa có hộp thoại xác nhận).<br>• Phân loại 5 nhóm chi tiêu chuẩn: **Food & Dining**, **Study & Books**, **Travel & Transit**, **Gear & Tech**, **Entertainment**.<br>• Tự động nén và cache ảnh hóa đơn gốc & thumbnail vào bộ nhớ ứng dụng nội bộ (`ThumbnailService`). |
+| **4** | **Custom Canvas Visualizations with CustomPainter** | ✅ Complete | • **Tuyệt đối tuân thủ yêu cầu đề bài: KHÔNG sử dụng bất kỳ thư viện biểu đồ bên thứ ba nào** (`fl_chart`, `syncfusion`...). Toàn bộ được vẽ bằng pure Dart Canvas API.<br>• **Animated Donut Chart**: Vẽ cung quét động với `Curves.easeOutCubic`, bo tròn đầu cung (`StrokeCap.round`), hỗ trợ toán lượng giác `atan2` bắt sự kiện chạm (hit-testing) để bung lát cắt (exploded slice) và hiển thị thông tin ở tâm.<br>• **Animated Bar Chart**: Cột chi tiêu 7 ngày trong tuần mọc từ 0, đường kẻ trung bình ngày (Average Line) và Tooltip tương tác vẽ trực tiếp trên Canvas khi chạm/kéo tay. |
+
+---
+
+## 3. TECHNICAL ARCHITECTURE & PROJECT STRUCTURE
+
+### 3.1. Directory Structure (Cấu trúc thư mục)
 ```
-Project 3/
-├── android/
-│   ├── app/
-│   │   ├── src/main/
-│   │   │   ├── AndroidManifest.xml   # Cấu hình Camera, Storage & ML Kit OCR
-│   │   │   └── kotlin/.../MainActivity.kt
-│   │   └── build.gradle              # minSdkVersion 21, targetSdkVersion 34
-│   ├── build.gradle
-│   └── settings.gradle
-├── ios/
-│   └── Runner/Info.plist             # Cấu hình quyền Camera & Photos
-├── assets/
-│   └── sample_receipts/              # Hóa đơn mẫu (WinMart, Highlands, Fahasa, Grab, CellphoneS)
-├── lib/
-│   ├── main.dart                     # Khởi tạo Flutter App & Theme
-│   ├── models/
-│   │   ├── category.dart             # Enum 5 danh mục, màu sắc, icon, tên tiếng Việt
-│   │   ├── expense.dart              # Model ExpenseItem & SQLite serialization
-│   │   └── parsed_receipt.dart       # Model kết quả bóc tách OCR & Line items
-│   ├── services/
-│   │   ├── database_helper.dart      # SQLite service (CRUD, lọc, nhóm số liệu biểu đồ)
-│   │   ├── ocr_service.dart          # Tích hợp Google ML Kit Text Recognition
-│   │   ├── receipt_heuristic_parser.dart # Bộ máy Heuristic Regex tiếng Việt & quốc tế
-│   │   └── thumbnail_service.dart    # Cache ảnh hóa đơn & tạo thumbnail
-│   ├── widgets/
-│   │   ├── animated_donut_chart.dart # CustomPainter biểu đồ tròn tương tác
-│   │   ├── animated_bar_chart.dart   # CustomPainter biểu đồ cột tuần tương tác
-│   │   ├── framing_crop_overlay.dart # CustomPainter kính ngắm scanner 4 góc
-│   │   ├── expense_list_tile.dart    # Thẻ giao dịch hỗ trợ vuốt xóa
-│   │   ├── summary_card.dart         # Thẻ gradient tổng quan chi tiêu
-│   │   └── category_badge.dart       # Huy hiệu danh mục hiển thị
-│   ├── screens/
-│   │   ├── home_screen.dart          # Màn hình chính (Danh sách, Tìm kiếm, Lọc)
-│   │   ├── camera_screen.dart        # Màn hình Camera Viewfinder & Lấy nét
-│   │   ├── receipt_review_screen.dart# Màn hình Xem lại & Sửa kết quả OCR
-│   │   ├── analytics_screen.dart     # Dashboard báo cáo tài chính CustomPainter
-│   │   └── expense_detail_screen.dart# Xem chi tiết giao dịch & ảnh hóa đơn
-│   ├── theme/
-│   │   └── app_theme.dart            # Material 3 Design Theme
-│   └── utils/
-│       └── currency_formatter.dart   # Tiện ích định dạng tiền tệ VND & Parser
-├── test/
-│   └── receipt_heuristic_parser_test.dart # Bộ kiểm thử tự động cho Parser
-└── pubspec.yaml
+lib/
+├── main.dart                          # Khởi tạo Flutter Engine, nạp SQLite, cấu hình Theme Material 3
+├── models/
+│   ├── category.dart                  # Enum 5 danh mục chi tiêu, icon, bảng màu, tên hiển thị
+│   ├── expense.dart                   # Thực thể ExpenseItem & SQLite serialization (toMap / fromMap)
+│   └── parsed_receipt.dart            # Dữ liệu bóc tách từ OCR: merchant, amount, date, confidence, lineItems
+├── services/
+│   ├── database_helper.dart           # SQLite Helper: Quản lý kết nối, CRUD, nạp dữ liệu mẫu ban đầu
+│   ├── ocr_service.dart               # Tích hợp Google ML Kit Text Recognition on-device
+│   ├── receipt_heuristic_parser.dart  # Bộ máy Regex Heuristic tiếng Việt & từ điển chuỗi cửa hàng
+│   └── thumbnail_service.dart         # Nén ảnh hóa đơn gốc và tạo thumbnail lưu vào app sandbox
+├── widgets/
+│   ├── animated_donut_chart.dart      # CustomPainter biểu đồ tròn quét góc & tương tác bung lát cắt
+│   ├── animated_bar_chart.dart        # CustomPainter biểu đồ cột tuần, vạch trung bình & canvas tooltip
+│   ├── framing_crop_overlay.dart      # CustomPainter khung ngắm kính scanner 4 góc bo tròn
+│   ├── expense_list_tile.dart         # Thẻ hiển thị giao dịch kèm thao tác Dismissible vuốt để xóa
+│   ├── summary_card.dart              # Thẻ banner tổng quan số dư chi tiêu gradient tím
+│   └── category_badge.dart            # Chip huy hiệu hiển thị danh mục
+├── screens/
+│   ├── home_screen.dart               # Trang chủ: Danh sách chi tiêu, tìm kiếm, lọc danh mục, BottomNav
+│   ├── camera_screen.dart             # Kính ngắm Camera trực tiếp, lấy nét cảm ứng, bật tắt đèn Flash
+│   ├── receipt_review_screen.dart     # Kiểm tra kết quả OCR, điều chỉnh số tiền, chọn candidate chips
+│   ├── analytics_screen.dart          # Dashboard phân tích tài chính với 2 biểu đồ CustomPainter
+│   └── expense_detail_screen.dart     # Chi tiết hóa đơn, xem ảnh chụp phóng to và chẩn đoán OCR raw
+├── theme/
+│   └── app_theme.dart                 # Định nghĩa theme Material 3 hiện đại, bảng màu trực quan
+└── utils/
+    └── currency_formatter.dart        # Định dạng tiền tệ VND (150.000 ₫), rút gọn (150k, 1.5M) & parser chuỗi
+```
+
+### 3.2. State Management & Data Flow (Luồng dữ liệu)
+```
+[Camera / Gallery / Mock]
+         │
+         ▼
+[Google ML Kit Text Recognition]  ──(Sub-100ms On-Device OCR)──►  [Raw Recognized Text]
+                                                                            │
+                                                                            ▼
+                                                            [ReceiptHeuristicParser]
+                                                            ├── Regex Match Amounts (VND)
+                                                            ├── Exclude Negative Keywords (Tiền thối)
+                                                            ├── Regex Match Dates (DD/MM/YYYY)
+                                                            └── Brand Dictionary Categorization
+                                                                            │
+                                                                            ▼
+[SQLite Storage (sqflite)]  ◄───[User Edits / Saves]────  [ReceiptReviewScreen]
+         │
+         ├──► [HomeScreen: SliverList, Search & Category Filters]
+         └──► [AnalyticsScreen: Pure Dart CustomPainter Canvas Charts]
 ```
 
 ---
 
-## 🛠️ Hướng dẫn cài đặt & Khởi chạy (How to Run)
+## 4. EMPIRICAL EVIDENCE & SCREENSHOTS
 
-### Yêu cầu tiên quyết:
-- Flutter SDK 3.10+ & Dart 3+
-- Thiết bị thật Android (khuyến nghị để test Camera & Google ML Kit) hoặc Android Emulator / iOS Simulator.
+Dưới đây là các ảnh chụp thực tế từ ứng dụng đang chạy trực tiếp trên máy ảo Android **Google Pixel 7 (API 34)**:
 
-### Các bước thực hiện:
+| 1. Trang chủ & Danh sách giao dịch | 2. Kính ngắm Camera & Lấy nét |
+|:---:|:---:|
+| ![01_home_transactions](docs/screenshots/01_home_transactions.png) | ![02_camera_overlay](docs/screenshots/02_camera_overlay.png) |
+| *Giao diện Material 3 với thẻ tổng quan, bộ lọc danh mục và danh sách chi tiêu từ SQLite.* | *Kính ngắm camera thời gian thực với khung crop viền xanh và reticle lấy nét cảm ứng.* |
 
-1. **Di chuyển vào thư mục dự án**:
+| 3. Màn hình Xem lại & Sửa OCR | 4. Phân tích tài chính (CustomPainter) |
+|:---:|:---:|
+| ![03_receipt_review](docs/screenshots/03_receipt_review.png) | ![04_analytics_charts](docs/screenshots/04_analytics_charts.png) |
+| *Bóc tách tự động hóa đơn WinMart (215.000 ₫), danh sách mặt hàng và độ tin cậy AI 93%.* | *Biểu đồ Donut bung lát cắt khi chạm và Biểu đồ cột 7 ngày vẽ 100% bằng CustomPainter.* |
+
+| 5. Chi tiết giao dịch & Bóc tách sản phẩm |
+|:---:|
+| ![05_expense_details](docs/screenshots/05_expense_details.png) |
+| *Chi tiết hóa đơn với danh sách từng món hàng đã mua, số lượng và chẩn đoán OCR.* |
+
+---
+
+## 5. TECHNICAL CHALLENGES & RESOLUTIONS
+
+### Thách thức 1: Xung đột Gradle 9 Kotlin DSL & Bộ đệm biên dịch chéo ổ đĩa trên Windows
+* **Vấn đề:** Môi trường Flutter 3.47 sử dụng Gradle 9 với định dạng mới `.gradle.kts`, dẫn đến lỗi `Plugin [id: 'com.android.application'] was not found`. Thêm vào đó, project nằm ở ổ `D:\` trong khi Gradle Cache ở ổ `C:\` gây ra lỗi `IllegalArgumentException: this and base files have different roots` trong bộ biên dịch Kotlin Incremental.
+* **Giải pháp:** 
+  1. Chuyển đổi và chuẩn hóa toàn bộ file cấu hình Gradle sang Kotlin DSL (`settings.gradle.kts`, `build.gradle.kts`, `app/build.gradle.kts`).
+  2. Bổ sung cấu hình `kotlin.incremental=false` và `kotlin.incremental.useClasspathSnapshot=false` trong `android/gradle.properties` để loại trừ hoàn toàn xung đột đường dẫn chéo ổ đĩa.
+
+### Thách thức 2: Lỗi R8 ProGuard Missing Classes khi đóng gói Release APK với Google ML Kit
+* **Vấn đề:** Khi build bản phát hành `assembleRelease`, trình tối ưu hóa mã R8 báo lỗi thiếu các lớp ngôn ngữ tùy chọn của ML Kit (`ChineseTextRecognizerOptions`, `DevanagariTextRecognizerOptions`, `JapaneseTextRecognizerOptions`, `KoreanTextRecognizerOptions`) do plugin khai báo reflection nhưng app chỉ cần bảng chữ cái Latin.
+* **Giải pháp:** Tạo tệp cấu hình ProGuard chuyên dụng tại `android/app/proguard-rules.pro` với các quy tắc `-dontwarn com.google.mlkit.vision.text.**` và kích hoạt trong `buildTypes.release` của file Gradle, giúp ứng dụng đóng gói thành công bản Release siêu nhẹ (chỉ ~32 MB).
+
+### Thách thức 3: Hiện thực biểu đồ tương tác cao hoàn toàn bằng `CustomPainter` (Zero 3rd-Party)
+* **Vấn đề:** Không được dùng các thư viện có sẵn (`fl_chart`, `charts_flutter`), đòi hỏi phải tự tính toán hình học không gian, góc lượng giác và xử lý va chạm cảm ứng ngay trên Canvas.
+* **Giải pháp:**
+  1. **Donut Chart**: Sử dụng hàm `canvas.drawArc` với đường cong hoạt họa `easeOutCubic`. Bắt tọa độ chạm `(dx, dy)` và chuyển đổi sang tọa độ cực bằng `atan2(dy - centerY, dx - centerX)` để xác định chính xác múi được click, từ đó dịch chuyển tâm lát cắt ra ngoài một khoảng vector `Offset(cos(midAngle) * 8, sin(midAngle) * 8)`.
+  2. **Bar Chart**: Tính toán tỉ lệ chiều cao cột dựa trên giá trị lớn nhất trong tuần, vẽ đường đứt nét trung bình bằng chu kỳ `dashWidth`/`dashSpace`, và render tooltip màu đen nổi bật ngay trên đỉnh cột khi người dùng di chuyển ngón tay.
+
+---
+
+## 6. PROJECT SETUP & EXECUTION GUIDE (HƯỚNG DẪN CÀI ĐẶT & KHỞI CHẠY)
+
+### 6.1. Yêu cầu môi trường (Prerequisites)
+- **Flutter SDK:** Phiên bản `>= 3.10.0` (Đã kiểm thử tối ưu trên Flutter 3.47.7 & Dart 3.13.5).
+- **Android Studio / VS Code** đã cài Flutter Extension.
+- **Android SDK:** `compileSdkVersion 34`, `minSdkVersion 21`.
+- **Thiết bị chạy:** Thiết bị thật Android (kết nối qua USB Debugging) hoặc Máy ảo Android (Android Emulator với Camera Virtual Scene).
+
+### 6.2. Các bước cài đặt chi tiết
+
+1. **Clone repository về máy tính:**
    ```bash
-   cd "d:\code\Lap Trinh Da Nen Tang\Project 3"
+   git clone https://github.com/[username]/[your-repo-name].git
+   cd [your-repo-name]
    ```
 
-2. **Cài đặt các gói phụ thuộc (Dependencies)**:
+2. **Cài đặt các gói phụ thuộc (Dependencies):**
    ```bash
    flutter pub get
    ```
 
-3. **Chạy kiểm thử Heuristic Regex (Unit Tests)**:
+3. **Chạy bộ kiểm thử tự động (Unit Tests):**
    ```bash
-   flutter test test/receipt_heuristic_parser_test.dart
+   flutter test
    ```
-   *(Tất cả 5/5 test case mẫu hóa đơn Việt Nam đều vượt qua 100%)*
+   *Kết quả mong đợi: `All tests passed! (7/7 tests pass)`*
 
-4. **Khởi chạy ứng dụng**:
-   - Chạy trên thiết bị kết nối:
+4. **Khởi chạy ứng dụng (Debug Mode):**
+   - Đảm bảo đã mở máy ảo hoặc cắm điện thoại Android vào máy tính:
+     ```bash
+     flutter devices
+     ```
+   - Chạy ứng dụng:
      ```bash
      flutter run
      ```
-   - Chạy bản Release để có hiệu năng cao nhất:
+   - Trong quá trình chạy, bạn có thể bấm phím `r` để Hot Reload hoặc `R` để Hot Restart.
+
+5. **Đóng gói file cài đặt APK (Release APK):**
+   - Build file APK Universal (cài được trên mọi điện thoại Android):
      ```bash
-     flutter run --release
+     flutter build apk
      ```
+     *File tạo thành tại: `build/app/outputs/flutter-apk/app-release.apk`*
+   - Hoặc build file APK tối ưu dung lượng (chỉ ~32MB cho máy hiện đại):
+     ```bash
+     flutter build apk --split-per-abi
+     ```
+     *File tạo thành tại: `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`*
 
----
-
-## 🧪 Hướng dẫn Demo & Đánh giá (Testing & Evaluation Guide)
-
-1. **Trải nghiệm ngay không cần hóa đơn giấy thật:**
-   - Mở ứng dụng -> Nhấn nút **"Scan OCR"** ở giữa thanh điều hướng.
-   - Nhấn vào biểu tượng menu hóa đơn góc trên cùng bên phải.
-   - Chọn một trong các mẫu hóa đơn có sẵn:
-     - 🛒 **WinMart Supermarket**: Nhận diện đúng danh mục `Food`, tổng tiền `215.000 VND`, ngày `12/10/2026`, tự động loại trừ tiền thừa `285.000 VND`.
-     - ☕ **Highlands Coffee**: Nhận diện đúng tổng tiền `149.000 đ`, ngày `11/10/2026`, loại trừ tiền thối `51.000 đ`.
-     - 📚 **Fahasa Bookstore**: Nhận diện danh mục `Study`, tổng tiền `290.000 VND`, ngày `10/10/2026`.
-     - 🛵 **GrabBike Commute**: Nhận diện danh mục `Travel`, tổng tiền `45.000 VND`.
-2. **Chụp hóa đơn thật qua Camera:**
+### 6.3. Hướng dẫn thử nghiệm nhanh các tính năng (Demo Guide)
+1. **Quét hóa đơn mẫu (Không cần hóa đơn giấy thật):**
+   - Mở app -> Chọn nút **"Scan OCR"** ở giữa thanh điều hướng dưới cùng.
+   - Nhấn vào biểu tượng hóa đơn ở góc trên cùng bên phải màn hình camera.
+   - Chọn một trong các mẫu:
+     - 🛒 **WinMart Supermarket**: Tự động bóc tách 215.000 ₫, phân loại `Food & Dining`, phát hiện 3 sản phẩm, loại trừ tiền thừa 285.000 ₫.
+     - ☕ **Highlands Coffee**: Tự động bóc tách 149.000 ₫, loại trừ tiền thối 51.000 ₫.
+     - 📚 **Fahasa Bookstore**: Tự động bóc tách 290.000 ₫, phân loại `Study & Books`.
+     - 🛵 **GrabBike Commute**: Tự động bóc tách 45.000 ₫, phân loại `Travel & Transit`.
+2. **Quét hóa đơn giấy thật:**
    - Đưa hóa đơn vào khung kính ngắm `FramingCropOverlay`.
-   - Bật/tắt đèn Flash hoặc chạm vào chữ trên hóa đơn để tự động lấy nét.
-   - Bấm nút chụp -> Hệ thống crop ảnh và Google ML Kit xử lý dưới 100ms.
-3. **Màn hình Review:**
-   - Xem thanh điểm tin cậy `ML Kit AI %`.
-   - Bật biểu tượng `</>` để xem mã OCR thô và nhật ký bóc tách.
-   - Chỉnh sửa thông tin nếu muốn và bấm **"Save Expense"**.
-4. **Màn hình Analytics (CustomPainter):**
+   - Chạm vào dòng chữ trên hóa đơn để tự động lấy nét hoặc bật đèn Flash nếu thiếu sáng.
+   - Bấm nút chụp hình tròn màu trắng -> Trí tuệ nhân tạo ML Kit sẽ xử lý tức thì (< 100ms).
+3. **Trải nghiệm biểu đồ CustomPainter:**
    - Chuyển sang tab **"Analytics"**.
-   - Quan sát hiệu ứng hoạt họa của biểu đồ Donut và biểu đồ Bar.
-   - Chạm vào từng múi biểu đồ tròn để xem tỷ lệ % và số tiền tương ứng.
-   - Chạm vào các cột trong tuần để xem Tooltip hiển thị số tiền chính xác.
-
+   - Chạm vào từng múi biểu đồ Donut để xem hiệu ứng bung lát cắt và số tiền tương ứng.
+   - Chạm/vuốt ngón tay trên biểu đồ cột 7 ngày để xem Tooltip hiển thị số tiền chính xác trên Canvas.

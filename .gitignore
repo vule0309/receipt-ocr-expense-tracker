@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .DS_Store
+Thumbs.db
 .atom/
 .buildlog/
 .history
@@ -28,7 +29,8 @@ migrate_working_dir/
 .packages
 .pub-cache/
 .pub/
-/build/
+build/
+**/build/
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -39,6 +41,10 @@ migrate_working_dir/
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
+*.apk
+*.aab
+*.jks
+*.keystore
 
 # iOS/macOS related
 **/ios/**/*.mode1v3
@@ -71,4 +77,3 @@ migrate_working_dir/
 *.orig
 *.rej
 *.bak
-

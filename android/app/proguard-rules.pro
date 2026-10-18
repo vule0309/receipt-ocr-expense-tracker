@@ -4,3 +4,4 @@
 -dontwarn com.google.mlkit.vision.text.japanese.**
 -dontwarn com.google.mlkit.vision.text.korean.**
 -keep class com.google.mlkit.** { *; }
+
